@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Implementation-Title: xhh-ssi-web
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: XHH
+Implementation-Vendor-Id: com.xhh.ssi
+Build-Jdk: 1.8.0_40
+Created-By: Maven Integration for Eclipse
+
