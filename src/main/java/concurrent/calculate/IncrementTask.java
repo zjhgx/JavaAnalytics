@@ -1,4 +1,4 @@
-package main.webapp.concurrent.calculate;
+package concurrent.calculate;
 
 public class IncrementTask extends Thread{
 	

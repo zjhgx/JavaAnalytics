@@ -1,4 +1,4 @@
-package main.webapp.concurrent.atoimc;
+package concurrent.atoimc;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
