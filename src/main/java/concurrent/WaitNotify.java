@@ -12,6 +12,8 @@ import java.util.Date;
 public class WaitNotify {
 	//locker
 	Object locker = new Object();
+	Object lock = new Object();
+	
 	volatile boolean flag=false;
 	
 	public void startWaitNotify() throws InterruptedException{
