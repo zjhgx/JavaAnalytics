@@ -10,6 +10,12 @@ wait c, m, where c is a condition variable and m is a mutex (lock) associated wi
 	* a.release the mutex m,
 	* b.move this thread from the "running" to c's "wait-queue" (a.k.a. "sleep-queue") of threads
 	* c.sleep this thread. (Context is synchronously yielded to another thread.)
+* Once this thread is subsequently notified/signalled (see below) and resumed, then automatically re-acquire the mutex
+>The atomicity of the operations within step 1 is important to avoid race conditions that would be caused by a preemptive thread switch in-between them. One failure mode that could occur if these were not atomic is a missed wakeup, in which the thread could be on c's sleep-queue and have released the mutex, but a preemptive thread switch occurred before the thread went to sleep, and another thread called a signal/notify operation (see below) on c moving the first thread back out of c's queue. As soon as the first thread in question is switched back to, its program counter will be at step 1c, and it will sleep and be unable to be woken up again, violating the invariant that it should have been on c's sleep-queue when it slept.
+
+signal c, also known as notify c, is called by a thread to indicate that the assertion Pc is true. Depending on the type and implementation of the monitor, this moves one or more threads from c's sleep-queue to the "ready queue" or another queues for it to be executed. It is usually considered a best practice to perform the "signal"/"notify" operation before releasing mutex m that is associated with c, but as long as the code is properly designed for concurrency and depending on the threading implementation, it is often also acceptable to release the lock before signalling.<br>
+
+broadcast c, also known as notifyAll c, is a similar operation that wakes up all threads in c's wait-queue. This empties the wait-queue.<br> 
 
 ### sleep和wait有什么不同？
 A wait can be "woken up" by another thread calling notify on the monitor which is being waited on whereas a sleep cannot. Also a wait (and notify) must happen in a block synchronized on the monitor object whereas sleep does not<br>
