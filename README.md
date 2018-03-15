@@ -1,5 +1,31 @@
 # JavaAnalytics
 
+### classic bounded producer/consumer problem
+A classic concurrency problem is that of the bounded producer/consumer, in which there is a queue or ring buffer of tasks with a maximum size, with one or more threads being "producer" threads that add tasks to the queue, and one or more other threads being "consumer" threads that take tasks out of the queue. The queue is assumed to be non–thread-safe itself, and it can be empty, full, or between empty and full. Whenever the queue is full of tasks, then we need the producer threads to block until there is room from consumer threads dequeueing tasks. On the other hand, whenever the queue is empty, then we need the consumer threads to block until more tasks are available due to producer threads adding them.<br>
+As the queue is a concurrent object shared between threads, accesses to it must be made atomic, because the queue can be put into an inconsistent state during the course of the queue access that should never be exposed between threads. Thus, any code that accesses the queue constitutes a critical section that must be synchronized by mutual exclusion. If code and processor instructions in critical sections of code that access the queue could be interleaved by arbitrary context switches between threads on the same processor or by simultaneously-running threads on multiple processors, then there is a risk of exposing inconsistent state and causing race conditions.<br>
+```Incorrect without synchronization
+global RingBuffer queue; // A thread-unsafe ring-buffer of tasks.
+
+// Method representing each producer thread's behavior:
+public method producer(){
+    while(true){
+        task myTask=...; // Producer makes some new task to be added.
+        while(queue.isFull()){} // Busy-wait until the queue is non-full.
+        queue.enqueue(myTask); // Add the task to the queue.
+    }
+}
+
+// Method representing each consumer thread's behavior:
+public method consumer(){
+    while(true){
+        while (queue.isEmpty()){} // Busy-wait until the queue is non-empty.
+        myTask=queue.dequeue(); // Take a task off of the queue.
+        doStuff(myTask); // Go off and do something with the task.
+    }
+}
+```
+This code has a serious problem in that accesses to the queue can be interrupted and interleaved with other threads' accesses to the queue. The queue.enqueue and queue.dequeue methods likely have instructions to update the queue's member variables such as its size, beginning and ending positions, assignment and allocation of queue elements, etc. In addition, the queue.isEmpty() and queue.isFull() methods read this shared state as well. If producer/consumer threads are allowed to be interleaved during the calls to enqueue/dequeue, then inconsistent state of the queue can be exposed leading to race conditions. In addition, if one consumer makes the queue empty in-between another consumer's exiting the busy-wait and calling "dequeue", then the second consumer will attempt to dequeue from an empty queue leading to an error. Likewise, if a producer makes the queue full in-between another producer's exiting the busy-wait and calling "enqueue", then the second producer will attempt to add to a full queue leading to an error.<br>
+
 ### 关于Monitor
 In concurrent programming, a monitor is a synchronization construct that allows threads to have both mutual exclusion and the ability to wait (block) for a certain condition to become true. Monitors also have a mechanism for signaling other threads that their condition has been met. A monitor consists of a mutex (lock) object and condition variables.<br>
 Another definition of monitor is a thread-safe class, object, or module that uses wrapped mutual exclusion in order to safely allow access to a method or variable by more than one thread. The defining characteristic of a monitor is that its methods are executed with mutual exclusion: At each point in time, at most one thread may be executing any of its methods.<br>
