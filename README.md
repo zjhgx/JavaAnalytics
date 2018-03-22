@@ -77,3 +77,57 @@ compare synchronized(OUTER_LOCK){ Thread.sleep(1000); } with synchronized(OUTER_
 ### synchronized(this)和synchronized(Classname.class)有什么不同？
 * synchronized(this) acquires the lock of the instance this for the current thread. The method can run parallel on different instances (different values for this and therefore different locks)
 * synchronized(SomeClass.class) acquires the lock of the global class object of SomeClass. Only one instance of the method can run as all object instances lock on the same global object (same lock).
+
+### innodb clustered index 
+the clustered index is synonymous with the primary key.Because modifying the columns of the clustered index is an expensive operation, choose primary columns that are rarely or never updated.
+* When you define a PRIMARY KEY on your table, InnoDB uses it as the clustered index. Define a primary key for each table that you create. If there is no logical unique and non-null column or set of columns, add a new auto-increment column, whose values are filled in automatically.
+* If you do not define a PRIMARY KEY for your table, MySQL locates the first UNIQUE index where all the key columns are NOT NULL and InnoDB uses it as the clustered index.
+* If the table has no PRIMARY KEY or suitable UNIQUE index, InnoDB internally generates a hidden clustered index named GEN_CLUST_INDEX on a synthetic column containing row ID values. The rows are ordered by the ID that InnoDB assigns to the rows in such a table. The row ID is a 6-byte field that increases monotonically as new rows are inserted. Thus, the rows ordered by the row ID are physically in insertion order.
+
+### InnoDB Locking
+Shared and Exclusive Locks<br>
+InnoDB implements standard row-level locking where there are two types of locks, shared (S) locks and exclusive (X) locks.<br>
+* A shared (S) lock permits the transaction that holds the lock to read a row.
+* An exclusive (X) lock permits the transaction that holds the lock to update or delete a row.
+If transaction T1 holds a shared (S) lock on row r, then requests from some distinct transaction T2 for a lock on row r are handled as follows:<br>
+A request by T2 for an S lock can be granted immediately. As a result, both T1 and T2 hold an S lock on r.<br>
+A request by T2 for an X lock cannot be granted immediately.<br>
+If a transaction T1 holds an exclusive (X) lock on row r, a request from some distinct transaction T2 for a lock of either type on r cannot be granted immediately. Instead, transaction T2 has to wait for transaction T1 to release its lock on row r.<br>
+
+Intention Locks<br>
+To make locking at multiple granularity levels practical, InnoDB uses intention locks. Intention locks are table-level locks that indicate which type of lock (shared or exclusive) a transaction requires later for a row in a table. <br>
+Before a transaction can acquire a shared lock on a row in a table, it must first acquire an IS lock or stronger on the table.<br>
+Before a transaction can acquire an exclusive lock on a row in a table, it must first acquire an IX lock on the table.<br>
+
+Record Locks<br>
+A record lock is a lock on an index record.the row-level locks are actually index-record locks
+
+
+* InnoDB行锁是通过给索引上的索引项加锁来实现的，只有通过索引条件检索数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁。
+* 由于MySQL的行锁是针对索引加的锁，不是针对记录加的锁，所以虽然是访问不同行的记录，但是如果是使用相同的索引键，是会出现锁冲突的。应用设计的时候要注意这一点.
+* 当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行，另外，不论是使用主键索引、唯一索引或普通索引，InnoDB都会使用行锁来对数据加锁。
+* 即便在条件中使用了索引字段，但是否使用索引来检索数据是由MySQL通过判断不同执行计划的代价来决定的，如果MySQL认为全表扫描效率更高，比如对一些很小的表，它就不会使用索引，这种情况下InnoDB将使用表锁，而不是行锁。因此，在分析锁冲突时，别忘了检查SQL的执行计划，以确认是否真正使用了索引。
+* 检索值的数据类型与索引字段不同，虽然MySQL能够进行数据类型转换，但却不会使用索引，从而导致InnoDB使用表锁。通过用explain检查两条SQL的执行计划，我们可以清楚地看到了这一点。
+* 由于MySQL的行锁是针对索引加的锁，不是针对记录加的锁，所以虽然是访问不同行的记录，但是如果是使用相同的索引键，是会出现锁冲突的.
+* 当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行，另外，不论是使用主键索引、唯一索引或普通索引，InnoDB都会使用行锁来对数据加锁。
+* 即便在条件中使用了索引字段，但是否使用索引来检索数据是由MySQL通过判断不同执行计划的代价来决定的，如果MySQL认为全表扫描效率更高，比如对一些很小的表，它就不会使用索引，这种情况下InnoDB将使用表锁，而不是行锁。因此，在分析锁冲突时，别忘了检查SQL的执行计划，以确认是否真正使用了索引。
+
+### Mysql index
+The index entries act like pointers to the table rows, allowing the query to quickly determine which rows match a condition in the WHERE clause, and retrieve the other column values for those rows.unnecessary indexes waste space and waste time for MySQL to determine which indexes to use. Indexes also add to the cost of inserts, updates, and deletes because each index must be updated.Indexes are used to find rows with specific column values quickly. Without an index, MySQL must begin with the first row and then read through the entire table to find the relevant rows.<br>
+索引为什么能加快搜索？索引已经排好序，可以用binary search来加快搜索速度<br>
+* To find the rows matching a WHERE clause quickly.
+* To eliminate rows from consideration. If there is a choice between multiple indexes, MySQL normally uses the index that finds the smallest number of rows (the most selective index).
+* If the table has a multiple-column index, any leftmost prefix of the index can be used by the optimizer to look up rows. For example, if you have a three-column index on (col1, col2, col3), you have indexed search capabilities on (col1), (col1, col2), and (col1, col2, col3).
+* To retrieve rows from other tables when performing joins. MySQL can use indexes on columns more efficiently if they are declared as the same type and size. In this context, VARCHAR and CHAR are considered the same if they are declared as the same size.
+* For comparisons between nonbinary string columns, both columns should use the same character set. For example, comparing a utf8 column with a latin1 column precludes use of an index.
+* 
+
+### Optimizing InnoDB Queries
+* Do not specify too many or too long columns in the primary key, because these column values are duplicated in each secondary index. When an index contains unnecessary data, the I/O to read this data and memory to cache it reduce the performance and scalability of the server.
+* 
+
+
+### Estimating Query Performance
+For bigger tables, you can estimate that, using B-tree indexes, you need this many seeks to find a row: log(row_count) / log(index_block_length / 3 * 2 / (index_length + data_pointer_length)) + 1.<br>
+In MySQL, an index block is usually 1,024 bytes and the data pointer is usually four bytes. For a 500,000-row table with a key value length of three bytes (the size of MEDIUMINT), the formula indicates log(500,000)/log(1024/3*2/(3+4)) + 1 = 4 seeks.
+
