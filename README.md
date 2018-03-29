@@ -85,7 +85,7 @@ the clustered index is synonymous with the primary key.Because modifying the col
 * If the table has no PRIMARY KEY or suitable UNIQUE index, InnoDB internally generates a hidden clustered index named GEN_CLUST_INDEX on a synthetic column containing row ID values. The rows are ordered by the ID that InnoDB assigns to the rows in such a table. The row ID is a 6-byte field that increases monotonically as new rows are inserted. Thus, the rows ordered by the row ID are physically in insertion order.
 
 ### InnoDB Locking
-Shared and Exclusive Locks<br>
+#### Shared and Exclusive Locks<br>
 InnoDB implements standard row-level locking where there are two types of locks, shared (S) locks and exclusive (X) locks.<br>
 * A shared (S) lock permits the transaction that holds the lock to read a row.
 * An exclusive (X) lock permits the transaction that holds the lock to update or delete a row.
@@ -94,14 +94,13 @@ A request by T2 for an S lock can be granted immediately. As a result, both T1 a
 A request by T2 for an X lock cannot be granted immediately.<br>
 If a transaction T1 holds an exclusive (X) lock on row r, a request from some distinct transaction T2 for a lock of either type on r cannot be granted immediately. Instead, transaction T2 has to wait for transaction T1 to release its lock on row r.<br>
 
-Intention Locks<br>
+#### Intention Locks<br>
 To make locking at multiple granularity levels practical, InnoDB uses intention locks. Intention locks are table-level locks that indicate which type of lock (shared or exclusive) a transaction requires later for a row in a table. <br>
 Before a transaction can acquire a shared lock on a row in a table, it must first acquire an IS lock or stronger on the table.<br>
 Before a transaction can acquire an exclusive lock on a row in a table, it must first acquire an IX lock on the table.<br>
 
-Record Locks<br>
+#### Record Locks<br>
 A record lock is a lock on an index record.the row-level locks are actually index-record locks
-
 
 * InnoDB行锁是通过给索引上的索引项加锁来实现的，只有通过索引条件检索数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁。
 * 由于MySQL的行锁是针对索引加的锁，不是针对记录加的锁，所以虽然是访问不同行的记录，但是如果是使用相同的索引键，是会出现锁冲突的。应用设计的时候要注意这一点.
