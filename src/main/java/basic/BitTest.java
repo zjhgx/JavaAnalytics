@@ -1,6 +1,7 @@
 package basic;
 
 public class BitTest {
+	
 	public static void main(String[] args){
 		
 		int i=10;
@@ -15,8 +16,8 @@ public class BitTest {
         int hash_1 = hash & 0x7F;
 
         String binary = Integer.toBinaryString(hash_1);        
-        System.out.println(binary);
-        System.out.println(hash_1);
+        System.out.println("binary=" + binary);
+        System.out.println("hash_1=" + hash_1);
         
         int a=-2;
         String a_str = Integer.toBinaryString(a);      
@@ -27,8 +28,8 @@ public class BitTest {
         int c=a>>>1;
         String c_str = Integer.toBinaryString(c);
 
-        System.out.println(a_str);
-        System.out.println(b_str);
+        System.out.println("a_str=" + a_str);
+        System.out.println("b_str=" + b_str);
         System.out.println(bm_str);
 
         System.out.println(c_str);
@@ -36,7 +37,7 @@ public class BitTest {
         System.out.println(1<<3);
         System.out.println(b);
         
-
-		
 	}
+	
+
 }
