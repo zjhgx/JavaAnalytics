@@ -14,3 +14,8 @@ AbstractAutowireCapableBeanFactory --- Object createBean(String beanName, RootBe
 
 SimpleInstantiationStrategy ---  Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) //bean的实例化 
 ```
+
+
+## spring cloud
+### Sprng Cloud Netflix
+@EnableDiscoveryClient looks for implementations of the DiscoveryClient interface via META-INF/spring.factories. Implementations of Discovery Client will add a configuration class to spring.factories under the org.springframework.cloud.client.discovery.EnableDiscoveryClient key. Examples of DiscoveryClient implementations: are Spring Cloud Netflix Eureka, Spring Cloud Consul Discovery and Spring Cloud Zookeeper Discovery.
