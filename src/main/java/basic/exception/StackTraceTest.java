@@ -1,13 +1,13 @@
 package basic.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 
 
 
 public class StackTraceTest {
-	private static final Logger LOG = LoggerFactory.getLogger(StackTraceTest.class);
+//	private static final Logger LOG = LoggerFactory.getLogger(StackTraceTest.class);
 
 	public static void main(String[] args){
 
@@ -16,7 +16,7 @@ public class StackTraceTest {
 			
 			test.throwException2();
 		}catch(Exception e){
-			LOG.error(e.getMessage(), e);
+//			LOG.error(e.getMessage(), e);
 		}
 	}
 	
