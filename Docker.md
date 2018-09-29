@@ -291,4 +291,81 @@ Now we see that pip install -r requirements.txt installs the Flask and Redis lib
 That’s it! You don’t need Python or anything in requirements.txt on your system, nor does building or running this image install them on your system. It doesn’t seem like you’ve really set up an environment with Python and Flask, but you have.
 
 
+### Build the app ###
+We are ready to build the app. Make sure you are still at the top level of your new directory. Here’s what ls should show:
+
+```
+$ ls
+Dockerfile		app.py			requirements.txt
+```
+
+Now run the build command. This creates a Docker image, which we’re going to tag using -t so it has a friendly name.
+
+```
+docker build -t friendlyhello .
+```
+Where is your built image? It’s in your machine’s local Docker image registry:
+
+```
+$ docker image ls
+
+REPOSITORY            TAG                 IMAGE ID
+friendlyhello         latest              326387cea398
+```
+
+>__Proxy server settings__
+Proxy servers can block connections to your web app once it’s up and running. If you are behind a proxy server, add the following lines to your Dockerfile, using the ENV command to specify the host and port for your proxy servers:
+
+```
+# Set proxy server, replace host:port with values for your servers
+ENV http_proxy host:port
+ENV https_proxy host:port
+
+```
+>__DNS settings__
+DNS misconfigurations can generate problems with pip. You need to set your own DNS server address to make pip work properly. You might want to change the DNS settings of the Docker daemon. You can edit (or create) the configuration file at /etc/docker/daemon.json with the dns key, as following:
+
+```
+{
+  "dns": ["your_dns_address", "8.8.8.8"]
+}
+
+```
+In the example above, the first element of the list is the address of your DNS server. The second item is the Google’s DNS which can be used when the first one is not available.
+
+Before proceeding, save daemon.json and restart the docker service.
+
+```
+sudo service docker restart
+```
+Once fixed, retry to run the build command.
+
+### Run the app ###
+Run the app, mapping your machine’s port 4000 to the container’s published port 80 using -p:
+
+```
+docker run -p 4000:80 friendlyhello
+```
+You should see a message that Python is serving your app at http://0.0.0.0:80. But that message is coming from inside the container, which doesn’t know you mapped port 80 of that container to 4000, making the correct URL http://localhost:4000.
+
+This port remapping of 4000:80 demonstrates the difference between EXPOSE within the Dockerfile and what the publish value is set to when running docker run -p. In later steps, map port 4000 on the host to port 80 in the container and use http://localhost.
+
+Now let’s run the app in the background, in detached mode:
+
+```
+docker run -d -p 4000:80 friendlyhello
+```
+You get the long container ID for your app and then are kicked back to your terminal. Your container is running in the background. You can also see the abbreviated container ID with docker container ls (and both work interchangeably when running commands):
+
+```
+$ docker container ls
+CONTAINER ID        IMAGE               COMMAND             CREATED
+1fa4ab2cf395        friendlyhello       "python app.py"     28 seconds ago
+```
+Notice that CONTAINER ID matches what’s on http://localhost:4000.
+Now use docker container stop to end the process, using the CONTAINER ID, like so:
+
+```
+docker container stop 1fa4ab2cf395
+```
 
