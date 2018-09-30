@@ -206,6 +206,11 @@ Containerization makes CI/CD seamless.
 * resource density can be optimized.
 
 ## Get Started, Part 2: Containers
+### Introduction
+It’s time to begin building an app the Docker way. We start at the bottom of the hierarchy of such an app, which is a container, which we cover on this page. Above this level is a service, which defines how containers behave in production, covered in Part 3. Finally, at the top level is the stack, defining the interactions of all the services, covered in Part 5.
+> * Stack
+  * Services
+  * Container
 
 ### Your new development environment
 In the past, if you were to start writing a Python app, your first order of business was to install a Python runtime onto your machine. But, that creates a situation where the environment on your machine needs to be perfect for your app to run as expected, and also needs to match your production environment.
@@ -368,4 +373,129 @@ Now use docker container stop to end the process, using the CONTAINER ID, like s
 ```
 docker container stop 1fa4ab2cf395
 ```
+### Share your image
+To demonstrate the portability of what we just created, let’s upload our built image and run it somewhere else. After all, you need to know how to push to registries when you want to deploy containers to production.
+
+A registry is a collection of repositories, and a repository is a collection of images—sort of like a GitHub repository, except the code is already built. An account on a registry can create many repositories. The docker CLI uses Docker’s public registry by default.
+
+### Log in with your Docker ID
+If you don’t have a Docker account, sign up for one at hub.docker.com. Make note of your username.
+
+Log in to the Docker public registry on your local machine.
+
+```
+$ docker login
+```
+
+### Tag the image
+The notation for associating a local image with a repository on a registry is username/repository:tag. The tag is optional, but recommended, since it is the mechanism that registries use to give Docker images a version. Give the repository and tag meaningful names for the context, such as get-started:part2. This puts the image in the get-started repository and tag it as part2.
+
+Now, put it all together to tag the image. Run docker tag image with your username, repository, and tag names so that the image uploads to your desired destination. The syntax of the command is:
+
+```
+docker tag image username/repository:tag	
+```
+For example:
+
+```
+docker tag friendlyhello gordon/get-started:part2
+```
+Run docker image ls to see your newly tagged image.
+
+```
+$ docker image ls
+REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE
+gordon/get-started   part2               209011d151af        11 hours ago        132MB
+friendlyhello        latest              209011d151af        11 hours ago        132MB
+ubuntu               latest              cd6d8154f1e1        3 weeks ago         84.1MB
+python               2.7-slim            c9cde4658340        3 weeks ago         120MB
+hello-world          latest              e38bc07ac18e        5 months ago        1.85kB
+```
+
+### Publish the image
+Upload your tagged image to the repository:
+
+```
+docker push username/repository:tag
+```
+Once complete, the results of this upload are publicly available. If you log in to Docker Hub, you see the new image there, with its pull command.
+
+### Pull and run the image from the remote repository
+From now on, you can use docker run and run your app on any machine with this command:
+
+```
+docker run -p 4000:80 username/repository:tag
+```
+If the image isn’t available locally on the machine, Docker pulls it from the repository.
+
+我先把新建的image给删除
+
+```
+docker image rm -f 209011d151af
+```
+If the image isn’t available locally on the machine, Docker pulls it from the repository.
+
+```
+vobile@vobile-ThinkPad-X1-Carbon-2nd:~$ docker run -p 4000:80 zjhgx/get-started:part2
+WARNING: Error loading config file: /home/vobile/.docker/config.json: stat /home/vobile/.docker/config.json: permission denied
+Unable to find image 'zjhgx/get-started:part2' locally
+part2: Pulling from zjhgx/get-started
+802b00ed6f79: Already exists 
+10b2d5f7ed73: Already exists 
+1073a127cf89: Already exists 
+90283f3dc1cd: Already exists 
+5b9089a76fb5: Already exists 
+88fc08329b9d: Already exists 
+83897ed5dc51: Already exists 
+Digest: sha256:79174156581c739621667f1b76c09fb5e518add054a3690289312f87c8dc560a
+Status: Downloaded newer image for zjhgx/get-started:part2
+ * Serving Flask app "app" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:80/ (Press CTRL+C to quit)
+```
+No matter where docker run executes, it pulls your image, along with Python and all the dependencies from requirements.txt, and runs your code. It all travels together in a neat little package, and you don’t need to install anything on the host machine for Docker to run it.
+
+Here is a list of the basic Docker commands from this page, and some related ones if you’d like to explore a bit before moving on.
+
+```
+docker build -t friendlyhello .  # Create image using this directory's Dockerfile
+docker run -p 4000:80 friendlyhello  # Run "friendlyname" mapping port 4000 to 80
+docker run -d -p 4000:80 friendlyhello         # Same thing, but in detached mode
+docker container ls                                # List all running containers
+docker container ls -a             # List all containers, even those not running
+docker container stop <hash>           # Gracefully stop the specified container
+docker container kill <hash>         # Force shutdown of the specified container
+docker container rm <hash>        # Remove specified container from this machine
+docker container rm $(docker container ls -a -q)         # Remove all containers
+docker image ls -a                             # List all images on this machine
+docker image rm <image id>            # Remove specified image from this machine
+docker image rm $(docker image ls -a -q)   # Remove all images from this machine
+docker login             # Log in this CLI session using your Docker credentials
+docker tag <image> username/repository:tag  # Tag <image> for upload to registry
+docker push username/repository:tag            # Upload tagged image to registry
+docker run username/repository:tag                   # Run image from a registry
+
+```
+
+## Get Started, Part 3: Services
+
+### Prerequisites
+
+ * Get Docker Compose
+ 
+ ```
+curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+ ```
+ 
+### Introduction
+In part 3, we scale our application and enable load-balancing. To do this, we must go one level up in the hierarchy of a distributed application: the service.
+
+
+
+
+
 
