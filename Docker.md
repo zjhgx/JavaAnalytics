@@ -493,6 +493,61 @@ chmod +x /usr/local/bin/docker-compose
  
 ### Introduction
 In part 3, we scale our application and enable load-balancing. To do this, we must go one level up in the hierarchy of a distributed application: the service.
+ * Stack
+ * **Services** (you are here)
+ * Container (covered in part 2)
+
+### About services
+In a distributed application, different pieces of the app are called “services.”For example, if you imagine a video sharing site, it probably includes a service for storing application data in a database, a service for video transcoding in the background after a user uploads something, a service for the front-end, and so on.
+
+Services are really just “containers in production.” A service only runs one image, but it codifies the way that image runs—what ports it should use, how many replicas of the container should run so the service has the capacity it needs, and so on. Scaling a service changes the number of container instances running that piece of software, assigning more computing resources to the service in the process.
+
+Luckily it’s very easy to define, run, and scale services with the Docker platform -- just write a docker-compose.yml file.
+
+###  Docker Compose
+Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration. 
+
+Compose works in all environments: production, staging, development, testing, as well as CI workflows. You can learn more about each case in Common Use Cases.
+
+Using Compose is basically a three-step process:
+ 1. 	Define your app’s environment with a Dockerfile so it can be reproduced anywhere.
+ 2. 	Define the services that make up your app in docker-compose.yml so they can be run together in an isolated environment.
+ 3. 	Run docker-compose up and Compose starts and runs your entire app.
+ 
+A docker-compose.yml looks like this:
+
+```
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+    - "5000:5000"
+    volumes:
+    - .:/code
+    - logvolume01:/var/log
+    links:
+    - redis
+  redis:
+    image: redis
+volumes:
+  logvolume01: {}
+```
+For more information about the Compose file, see the [Compose file reference](https://docs.docker.com/compose/compose-file/).
+
+Compose has commands for managing the whole lifecycle of your application:
+
+* Start, stop, and rebuild services
+* View the status of running services
+* Stream the log output of running services
+* Run a one-off command on a service
+
+### Features
+The features of Compose that make it effective are:
+ - Multiple isolated environments on a single host
+ - Preserve volume data when containers are created
+ - Only recreate containers that have changed
+ - Variables and moving a composition between environments
 
 
 
