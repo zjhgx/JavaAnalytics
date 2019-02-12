@@ -9,7 +9,9 @@
 <!--   <packaging>war</packaging>
  -->  <dependencies>
 
-
+<properties>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+</properties>
     
     <dependency>
 		<groupId>org.springframework.session</groupId>
@@ -17,6 +19,12 @@
 		<version>1.0.2.RELEASE</version>
 	</dependency>
 
+ <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+<dependency>
+    <groupId>org.apache.httpcomponents</groupId>
+    <artifactId>httpclient</artifactId>
+    <version>4.5.1</version>
+</dependency>
   
 
     <!-- Data Access -->
@@ -88,17 +96,19 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
-            <version>2.3</version>
+            <version>2.6</version>
             <configuration>
-                <webResources>
-                    <!-- 优先顺序设定 (先设定的不覆盖)-->
+                <failOnMissingWebXml>false</failOnMissingWebXml>  
+            
+<!--                 <webResources>
+                    优先顺序设定 (先设定的不覆盖)
                     <resource>
                         <directory>${webapp.resources}</directory>
                     </resource>
                     <resource>
                         <directory>src/main/webapp</directory>
                     </resource>
-                </webResources>
+                </webResources> -->
             </configuration>
         </plugin>
     </plugins>
