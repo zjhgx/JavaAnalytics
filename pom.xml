@@ -7,11 +7,12 @@
   <name>xhh-ssi-web</name>
   <description>web模块</description>
 <!--   <packaging>war</packaging>
- -->  <dependencies>
-
-<properties>
+ -->  
+ <properties>
     <failOnMissingWebXml>false</failOnMissingWebXml>
 </properties>
+ 
+ <dependencies>
     
     <dependency>
 		<groupId>org.springframework.session</groupId>
