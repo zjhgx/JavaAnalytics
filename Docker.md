@@ -504,6 +504,38 @@ Services are really just “containers in production.” A service only runs one
 
 Luckily it’s very easy to define, run, and scale services with the Docker platform -- just write a docker-compose.yml file.
 
+### Your first docker-compose.yml file ###
+A docker-compose.yml file is a YAML file that defines how Docker containers should behave in production.
+
+```
+docker-compose.yml
+```
+Save this file as docker-compose.yml wherever you want. Be sure you have pushed the image you created in Part 2 to a registry, and update this .yml by replacing username/repo:tag with your image details.
+
+```
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: username/repo:tag
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "4000:80"
+    networks:
+      - webnet
+networks:
+  webnet:
+
+```
+
+
 ###  Docker Compose
 Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration. 
 
