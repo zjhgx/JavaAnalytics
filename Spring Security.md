@@ -1,3 +1,9 @@
+## Spring Security Architecture
+
+#### Authentication and Access Control
+Application security boils down to two more or less independent problems: authentication (who are you?) and authorization (what are you allowed to do?). Sometimes people say "access control" instead of "authorization" which can get confusing, but it can be helpful to think of it that way because "authorization" is overloaded in other places. Spring Security has an architecture that is designed to separate authentication from authorization, and has strategies and extension points for both.
+
+
 8.1.3 Authentication
 What is authentication in Spring Security?
 Let’s consider a standard authentication scenario that everyone is familiar with.
