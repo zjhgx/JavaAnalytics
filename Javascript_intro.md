@@ -450,13 +450,33 @@ myAge;
 scoobyDoo;
 ```
 
-**提示**: 千万不要把两个概念弄混淆了，“一个变量存在，但是没有数值”和“一个变量并不存在” — 他们完全是两回事 — 在前面你看到的盒子的类比中，不存在意味着没有可以存放变量的“盒子”。没有定义的值意味着有一个“盒子”，但是它里面没有任何值。
+> **提示**: 千万不要把两个概念弄混淆了，“一个变量存在，但是没有数值”和“一个变量并不存在” — 他们完全是两回事 — 在前面你看到的盒子的类比中，不存在意味着没有可以存放变量的“盒子”。没有定义的值意味着有一个“盒子”，但是它里面没有任何值。
 
 ## 初始化变量
 
+一旦你定义了一个变量，你就能够初始化它. 方法如下，在变量名之后跟上一个“=”，然后是数值:
 
+```js
+myName = 'Chris';
+myAge = 37;
+```
 
+现在回到控制台并且尝试输入这几行。每输入一条你都应该确认一下控制台输出的变量是不是你刚赋的值。 同样，你可以通过在控制台中输入变量的名称来返回该变量的值 — 再次尝试下这些:
 
+```js
+myName;
+myAge;
+```
+
+你可以像这样在声明变量的时候给变量初始化:
+
+```js
+let myName = 'Chris';
+```
+
+这可能是大多数时间你都会使用的方式， 因为它要比在单独的两行上做两次操作要快。
+
+**Note**: 如果你写一个声明和初始化变量的多行JavaScript代码的程序，你可以在初始化变量之后再实际声明它，并且它仍然可以工作。这是因为变量的声明通常在其余的代码执行之前完成。这叫做**顶置**—阅读[var hoisting](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var#var_hoisting)来了解更多细节。
 
 ## var 与 let 的区别
 
@@ -480,7 +500,402 @@ logName();
 var myName;
 ```
 
-Note: 只有在 web 文档中运行多行 JavaScript 时才会有这种效果，当在 JavaScript 控制台中键入单独的行，这将不起作用。
+> Note: 只有在 web 文档中运行多行 JavaScript 时才会有这种效果，当在 JavaScript 控制台中键入单独的行，这将不起作用。
+>
+
+这是由于变量的**提升**，更多细节请阅读[变量提升](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/var#变量提升)。
+
+但提升操作不再适用于 `let` 。如果将上面例子中的 `var` 替换成 `let` 将不起作用并引起一个错误。 这是一件好事——因为初始化后再声明一个变量会使代码变得混乱和难以理解。
+
+其次，当你使用 `var` 时，可以根据需要多次声明相同名称的变量，但是 `let` 不能。 以下将有效：
+
+```js
+var myName = 'Chris';
+var myName = 'Bob';
+```
+
+但是以下内容会在第二行引发错误：
+
+```js
+let myName = 'Chris';
+let myName = 'Bob';
+```
+
+你必须这样做：
+
+```js
+let myName = 'Chris';
+myName = 'Bob';
+```
+
+同样，这是一个明智的语言决定。没有理由重新声明变量——这只会让事情变得更加混乱。
+
+出于这些以及其他原因，我们建议您在代码中尽可能多地使用 `let`，而不是 `var`。因为没有理由使用 `var`，除非您需要用代码支持旧版本的 Internet Explorer (它直到第 11 版才支持 `let` ，现代的 Windows Edge 浏览器支持的很好)。
+
+>  **Note:** 我们目前正在更新课程以使用let而不是var。 忍耐一下！
+
+## 更新变量
+
+一旦变量赋值，您可以通过简单地给它一个不同的值来更新它。试试在你的控制台中输入下面几行:
+
+```js
+myName = 'Bob';
+myAge = 40;
+```
+
+### 关于变量命名的规则
+
+你可以给你的变量赋任何你喜欢的名字，但有一些限制。 一般你应当坚持使用拉丁字符(0-9,a-z,A-Z)和下划线字符。
+
+- 你不应当使用规则之外的其他字符，因为它们可能引发错误，或对国际用户来说难以理解。
+- 变量名不要以下划线开头—— 以下划线开头的被某些JavaScript设计为特殊的含义，因此可能让人迷惑。
+- 变量名不要以数字开头。这种行为是不被允许的，并且将引发一个错误。
+- 一个可靠的命名约定叫做 ["小写驼峰命名法"](https://en.wikipedia.org/wiki/CamelCase#Variations_and_synonyms)，用来将多个单词组在一起，小写整个命名的第一个字母然后大写剩下单词的首字符。我们已经在文章中使用了这种命名方法。
+- 让变量名直观，它们描述了所包含的数据。不要只使用单一的字母/数字，或者长句。
+- 变量名大小写敏感——因此`myage`与`myAge`是2个不同的变量。
+- 最后也是最重要的一点—— 你应当避免使用JavaScript的保留字给变量命名。保留字，即是组成JavaScript的实际语法的单词！因此诸如 `var`, `function`, `let和` `for`等，都不能被作为变量名使用。浏览器将把它们识别为不同的代码项，因此你将得到错误。
+
+**Note**: 你能从[词汇语法—关键字](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#Keywords)找到一个相当完整的保留关键字列表来避免使用关键字当作变量。
+
+好的命名示例:
+
+```html
+age
+myAge
+init
+initialColor
+finalOutputValue
+audio1
+audio2
+```
+
+错误与差的命名示例:
+
+```html
+1
+a
+_12
+myage
+MYAGE
+var
+Document
+skjfndskjfnbdskjfb
+thisisareallylongstupidvariablenameman
+```
+
+现在尝试创建更多的变量，请将上面的指导铭记于心。
+
+## 变量类型
+
+可以为变量设置不同的数据类型。本节我们将对其进行简短的介绍，在以后的文章中，你会更详细地了解它们。
+
+到目前为止我们已经认识了前2个，但是还有其他的。
+
+### Number
+
+你可以在变量中存储数字，不论这些数字是像30（也叫整数）这样，或者像2.456这样的小数（也叫做浮点数）。与其他编程语言不同，在 JavaScript 中你不需要声明一个变量的类型。当你给一个变量数字赋值时，不需要用引号括起来。 
+
+```js
+let myAge = 17;
+```
+
+### String
+
+字符串是文本的一部分。当你给一个变量赋值为字符串时，你需要用单引号或者双引号把值给包起来，否则JavaScript将会把这个字符串值理解成别的变量名。
+
+```js
+let dolphinGoodbye = 'So long and thanks for all the fish';
+```
+
+### Boolean
+
+Boolean 的值有2种：true或false。它们通常被用于在适当的代码之后，测试条件是否成立。举个例子，一个简单的示例如下： 
+
+```js
+let iAmAlive = true;
+```
+
+然而实际上通常是以下用法：
+
+```js
+let test = 6 < 3;
+```
+
+这是使用“小于”操作符（<）来测试6小于3。正如你所料的，将会返回`false`，因为6并不小于3！在这个课程中，以后你将会学到许多有关操作符的知识。
+
+### Array
+
+数组是一个单个对象，其中包含很多值，方括号括起来，并用逗号分隔。尝试在您的控制台输入以下行:
+
+```js
+let myNameArray = ['Chris', 'Bob', 'Jim'];
+let myNumberArray = [10,15,40];
+```
+
+当数组被定义后，您可以使用如下所示的语法来访问各自的值，例如下行:
+
+```js
+myNameArray[0]; // should return 'Chris'
+myNumberArray[2]; // should return 40
+```
+
+此处的方括号包含一个索引值，该值指定要返回的值的位置。 您可能已经注意到，计算机从0开始计数，而不是像我们人类那样的1。
+
+在以后的文章，你将更多地了解数组。
+
+### Object
+
+在编程中，对象是现实生活中的模型的一种代码结构。您可以有一个简单的对象，代表一个停车场，并包含有关其宽度和长度的信息，或者您可以有一个代表一个人的对象，并包含有关他们的名字，身高，体重，他们说什么语言，如何说 你好，他们，等等。
+
+尝试在您的控制台输入以下行:
+
+```js
+let dog = { name : 'Spot', breed : 'Dalmatian' };
+```
+
+要检索存储在对象中的信息，可以使用以下语法:
+
+```js
+dog.name
+```
+
+我们现在不会看对象了 - 您可以在将来的模块中了解更多关于这些对象的信息.
+
+## 动态类型
+
+JavaScript是一种“动态类型语言”，这意味着不同于其他一些语言(译者注：如C、JAVA)，您不需要指定变量将包含什么数据类型（例如number或string）
+
+例如，如果你声明一个变量并给它一个带引号的值，浏览器就会知道它是一个字符串：
+
+```js
+let myString = 'Hello';
+```
+
+即使它包含数字，但它仍然是一个字符串，所以要小心：
+
+```js
+let myNumber = '500'; // oops, this is still a string
+typeof myNumber;
+myNumber = 500; // much better — now this is a number
+typeof myNumber
+```
+
+尝试依次将上述代码输入您的控制台，看看结果是什么（无须输入//之后的注释）。 我们使用了一个名为`typeof`的特殊的操作符 ——它会返回所传递给它的变量的数据类型。 第一次在上面的代码中调用它，它应该返回string，因为此时myNumber变量包含一个字符串'500'。 看看它第二次将返回什么。
+
+## 总结
+
+到目前为止，您应该了解了适量的JavaScript以及如何创建它们。 在下一篇文章中，我们将更详细地关注数字，了解如何在JavaScript中使用基础数学。
+
+
+
+# JavaScript中的基础数学 — 数字和操作符
+
+
+
+## 人人都爱数学
+
+好吧，可能不是。有些人喜欢数学，有些人可能从在学校必须学习乘法表和长除法时就讨厌数学，还有人介于两者之间。但我们都不能否认，数学是生活的基本组成部分，我们离不了它。尤其如此，当我们学习编写 JavaScript 程序（或任何其他语言），我们所做的很多事情都依赖于处理数值数据，计算新值等。你将不会惊讶地认识到 JavaScript 有一套可用的全功能的数学功能。
+
+本文仅讨论您现在需要了解的基本部分。
+
+### 数字类型
+
+在编程中，即使是人人熟知的最普遍的十进制数，也比你想象的要复杂的多。我们使用不同的术语来描述不同类型的十进制数，例如：
+
+- **整数** 就是整数,例如 10, 400, 或者 -5.
+- **浮点数** (浮点) 有小数点或小数位，例如 12.5，和 56.7786543。
+- **双精度**双精度是一种特定类型的浮点数，它们具有比标准浮点数更高的精度（这意味着它们精确到更大的小数位数）。
+
+我们甚至有不同类型的数字系统！ 十进制是基数10（意味着它在每列使用0-9），但是我们也有这样的东西：
+
+- **二进制** — 计算机的最基础语言; 0s and 1s
+- **八进制** — 基数8，每列使用0-7
+- **十六进制** — 基数16，每列使用0-9，然后使用a-f。 在CSS中设置颜色时，可能会遇到这些数字。
+
+在你开始担心你的大脑混乱之前，先停下来吧！ 一开始，我们将在本课程中坚持使用十进制数; 你很少会遇到需要开始考虑其他类型的情况，如果有的话。
+
+第二个好消息是，与其他一些编程语言不同，JavaScript只有一个数据类型-- 整数和浮点数，您猜对了，[`Number`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number)。 这意味着，你在JavaScript中处理的任何类型的数字，都以完全相同的方式处理它们。
+
+### 这是我们的全部数字
+
+让我们快点玩一些数字，以重新定义我们所需要的基本语法。 在您的[开发工具JavaScript控制台](https://developer.mozilla.org/zh-CN/docs/Learn/Discover_browser_developer_tools)中输入下面列出的命令。
+
+**[在新窗口中打开](https://mdn.github.io/learning-area/javascript/introduction-to-js-1/variables/)**
+
+1. 首先，我们先声明一对变量，并分别用一个整数和一个浮点数来初始化它们，然后再输入变量名来检查是否正确：
+
+   ```js
+   let myInt = 5;
+   let myFloat = 6.667;
+   myInt;
+   myFloat;
+   ```
+
+2. 数值键入不带引号 —— 在继续之前尝试声明和初始化更多包含数字的变量。
+
+3. 现在我们来看看我们的原始变量是否是相同的数据类型。 在JavaScript中有一个称为
+
+   `typeof`的运算符。 输入如下所示的两行：
+
+   ```js
+typeof myInt;
+   typeof myFloat;
+   ```
+```
+   
+   在这两种情况下，都应该返回"number"—— 这使得事情变得更简单，因为若是不同的数字具有不同的数据类型，那么我们还须以不同的方式处理它们。呦！
+
+## 算术运算符
+
+算术运算符是我们用来做和的基本运算符：
+
+| 运算符 | 名称                 | 作用                                                         | 示例                                                |
+| :----- | :------------------- | :----------------------------------------------------------- | :-------------------------------------------------- |
+| `+`    | 加法                 | 两个数相加。                                                 | `6 + 9`                                             |
+| `-`    | 减法                 | 从左边减去右边的数。                                         | `20 - 15`                                           |
+| `*`    | 乘法                 | 两个数相乘。                                                 | `3 * 7`                                             |
+| `/`    | 除法                 | 用右边的数除左边的数                                         | `10 / 5`                                            |
+| `%`    | 求余(有时候也叫取模) | 在你将左边的数分成同右边数字相同的若干整数部分后，返回剩下的余数 | `8 % 3` (返回 2，8除以3的倍数，余下2 。)            |
+| `**`   | 幂                   | 取底数的指数次方，即指数所指定的底数相乘。它在EcmaScript 2016 中首次引入。 | `5 ** 5` (返回 3125，相当于 `5 * 5 * 5 * 5 * 5` 。) |
+
+> **Note**: 你以后有时候会看到一些数字涉及求和被称为 操作数([operands](https://developer.mozilla.org/en-US/docs/Glossary/Operand))。
+
+> Note: 有时你可能会看到使用较旧的 [`Math.pow()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math/pow) 方法表达的指数，该方法的工作方式非常相似。 例如，在 `Math.pow(7, 3)` 中，`7` 是基数，`3` 是指数，因此表达式的结果是 `343`。 `Math.pow(7, 3)` 相当于 `7 ** 3`。
+>
+
+我们可能不需要教你如何做基础数学，但我们想测试你对所涉及的语法的理解。 尝试将下面的示例输入到[开发者工具JavaScript控制台](https://developer.mozilla.org/zh-CN/docs/Learn/Discover_browser_developer_tools)中。
+
+1. 首先尝试输入一些简单的例子，例如
+
+   ```js
+   10 + 7
+   9 * 8
+   60 % 3
+```
+
+2. 您还可以尝试在变量中声明和初始化一些数字，并尝试使用总和中的数字 - 变量的行为与其持有的值完全一样。 例如：
+
+   ```js
+   let num1 = 10;
+   let num2 = 50;
+   9 * num1;
+   num1 ** 3;
+   num2 / num1;
+   ```
+
+3. 最后在本节中，尝试输入一些更复杂的表达式，如：
+
+   ```js
+   5 + 10 * 3;
+   num2 % 9 * num1;
+   num2 + num1 / 8 + 2;
+   ```
+
+这最后一个算法和中的一些可能不会给你期望的结果; 下面的部分可能会给出答案为什么。
+
+### 运算符优先级
+
+我们来看看上面的最后一个例子，假设num2的值为50，num1的值为10（如上所述）：
+
+```js
+num2 + num1 / 8 + 2;
+```
+
+一般人，你会将它看作“50加10等于60”，然后“8加2等于10”，最后“60除以10等于6”。
+
+但浏览器的“10除以8等于1.25”，那么“50加1.25加2等于53.25”。
+
+这是因为**运算符优先级** —— 一些运算符将在计算总和的结果（在编程中称为表达式）时被应用于其他运算符。 JavaScript中的运算符优先级与学校的数学课程相同 - 乘法和除法总是先完成，然后加法和减法（总和总是从左到右进行评估）。
+
+如果要覆盖运算符优先级，可以首先对要显式处理的部分进行括号。 所以要得到6的结果，我们可以这样做：
+
+```js
+(num2 + num1) / (8 + 2);
+```
+
+尝试看看。
+
+> **Note**: 注意：可以在[表达式和运算符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Expressions_and_Operators#运算符优先级)中找到所有JavaScript运算符的完整列表及其优先级。
+
+## 递增和递减运算符
+
+有时候，您需要反复添加或从数字变量值中减去一个。 这可以方便地使用增量（`++`）和递减（ `--` ）运算符来完成。 我们在JavaScript 初体验文章的“猜数字”游戏中使用了++，当我们添加1到我们的guessCount变量来跟踪用户在每次转动之后剩下的猜测时。
+
+```js
+guessCount++;
+```
+
+**Note**: 它们最常用于 [循环](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Loops_and_iteration) 中，您将在以后的课程中了解。 例如，假设您想循环查看价格表，并为每个价格增加销售税。 您可以使用循环依次查看每个值，并在每种情况下进行必要的计算，以添加销售税。 当需要时，增量器用于移动到下一个值。 我们实际上提供了一个简单的例子，显示了如何完成 ——  [在线查看效果](https://mdn.github.io/learning-area/javascript/introduction-to-js-1/maths/loop.html)，并 [查看源代码](https://github.com/mdn/learning-area/blob/master/javascript/introduction-to-js-1/maths/loop.html)，看看是否可以发现增量器！ 我们稍后将会详细介绍循环。
+
+我们来试试看你们的控制台。 首先，请注意，您不能将这些直接应用于一个数字，这可能看起来很奇怪，但是我们为变量赋值一个新的更新值，而不是对该值进行操作。 以下将返回错误：
+
+```js
+3++;
+```
+
+所以，你只能增加一个现有的变量。 尝试这个：
+
+```js
+let num1 = 4;
+num1++;
+```
+
+好的，第二个奇怪的东西！ 执行此操作时，您会看到返回值为4，这是因为浏览器返回当前值，然后增加变量。 如果您再次返回变量值，则可以看到它已经递增：
+
+```js
+num1;
+```
+
+递减 `--` 同样如此，尝试以下操作：
+
+```js
+let num2 = 6;
+num2--;
+num2
+```
+
+> **Note**: 您可以使浏览器以其他方式进行操作 - 递增/递减变量，然后返回值 - 将操作符放在变量的开头，而不是结束。 再次尝试上面的例子，但这次使用 `++num1` 和 `--num2`。
+
+## 赋值运算符
+
+赋值运算符是向变量分配值的运算符。 我们已经使用了最基本的一个很多次了：`=`， 它只是将右边的值赋给左边的变量 ，即：
+
+```js
+let x = 3; // x 的值是 3
+let y = 4; // y 的值是 4
+x = y; // x 和 y 有相同的值, 4
+```
+
+但是还有一些更复杂的类型，它们提供了有用的快捷方式，可以使您的代码更加清洁和高效。 最常见的如下：
+
+| 运算符 | 名称     | 作用                                           | 示例             | 等价于              |
+| :----- | :------- | :--------------------------------------------- | :--------------- | :------------------ |
+| `+=`   | 加法赋值 | 右边的数值加上左边的变量，然后再返回新的变量。 | `x = 3;x += 4;`  | `x = 3;x = x + 4;`  |
+| `-=`   | 减法赋值 | 左边的变量减去右边的数值，然后再返回新的变量。 | `x = 6;x -= 3;`  | `x = 6;x = x - 3;`  |
+| `*=`   | 乘法赋值 | 左边的变量乘以右边的数值，然后再返回新的变量。 | `x = 2;x *= 3;`  | `x = 2;x = x * 3;`  |
+| `/=`   | 除法赋值 | 左边的变量除以右边的数值，然后再返回新的变量。 | `x = 10;x /= 5;` | `x = 10;x = x / 5;` |
+
+尝试在你的控制台中输入上面的一些示例，以了解它们的工作原理。 在每种情况下，你是否可以猜出在输入第二行之前的值。
+
+请注意，您可以愉快地使用每个表达式右侧的其他变量，例如：
+
+```js
+let x = 3; // x 包含值 3
+let y = 4; // y 包含值 4
+x *= y; // x 现在包含值 12
+```
+
+> **Note**: 虽然有很多可用的[赋值运算符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Expressions_and_Operators#Assignment_operators), 但是这些是你现在应该学习的基本的一类。
+
+## 主动学习：调整画布框的大小
+
+在这个练习中，我们将让你填写一些数字和操作符来操纵一个框的大小。 该框使用称为[Canvas API](https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API)的浏览器API绘制。 没有必要担心这是如何工作的 - 现在只关注数学。 盒子的宽度和高度（以像素为单位）由变量 `x` 和 `y` 定义，变量 `x` 和 `y` 最初都被赋值为50。
+
+
+
+
+
+
 
 
 
@@ -657,7 +1072,7 @@ function greeting() {
 }
 ```
 
-这两个函数都使用 `greeting()` 形式调用，但是你只能访问到 `second.js`文件的`greeting()`函数。`second.js` 在源代码中后应用到HTML中，所以它的变量和函数覆盖了 `first.js` 中的。
+这两个函数都使用 `greeting()` 形式调用，但是你只能访问到 `first.js`文件的`greeting()`函数。`second.js` 的代码被忽略。除此之外，在second.js中用let声明name这个变量会报错。
 
 **Note**: 您可以参考这个例子 [running live on GitHub](http://mdn.github.io/learning-area/javascript/building-blocks/functions/conflict.html) (查看完整 [源代码](https://github.com/mdn/learning-area/tree/master/javascript/building-blocks/functions)).
 
@@ -670,8 +1085,6 @@ function greeting() {
 动物园管理员就像全局作用域 - 他或她有钥匙访问每个园子，重新投喂食物，照顾生病的动物等。
 
 ### 主动学习: 和 scope 玩耍
-
-
 
 我们来看一个真正的例子来展示范围
 
@@ -766,8 +1179,6 @@ b();
 > **注意**:相同的范围规则不适用于循环（for（）{...}）和条件块（if（）{...}） - 它们看起来非常相似，但它们不一样！小心不要让这些困惑。
 
 > 注意：ReferenceError：“x”未定义错误是您遇到的最常见的错误。如果您收到此错误，并且确定您已经定义了该问题的变量，请检查它的范围。
-
-
 
 ### 函数内部的函数
 
@@ -897,8 +1308,6 @@ var person2 = {
 
 ### 一个简单的例子
 
-
-
 让我们看一个简单的例子。前面您已经见到过很多事件和事件监听器，现在我们概括一下以巩固我们的知识。在接下来的例子中，我们的页面中只有一个 button，按下时，背景会变成随机的一种颜色。
 
 ```html
@@ -938,9 +1347,484 @@ btn.onclick = function() {
 
 您现在不需要掌握这些，我们只想表明不同的编程环境下事件机制是不同的，
 
+## 使用网页事件的方式
+
+您可以通过多种不同的方法将事件侦听器代码添加到网页，以便在关联的事件被触发时运行它。在本节中，我们将回顾不同的机制，并讨论应该使用哪些机制。
+
+### 事件处理器属性
+
+*这些是我们的课程中最常见到的代码 - 存在于事件处理程序过程的属性中*。回到上面的例子：
+
+```js
+var btn = document.querySelector('button');
+
+btn.onclick = function() {	
+  var rndCol = 'rgb(' + random(255) + ',' + random(255) + ',' + random(255) + ')';
+  document.body.style.backgroundColor = rndCol;
+}
+```
+
+这个 `onclick` 是被用在这个情景下的事件处理器的属性，它就像 button 其他的属性（如 `btn.textContent`, or `btn.style`), 但是有一个特别的地方——当您将一些代码赋值给它的时候，只要事件触发代码就会运行。
+
+您也可以将一个有名字的函数赋值给事件处理参数（正如我们在 [Build your own function](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Build_your_own_function) 中看到的），下面的代码也是这样工作的：
+
+```js
+var btn = document.querySelector('button');
+
+function bgChange() {
+  var rndCol = 'rgb(' + random(255) + ',' + random(255) + ',' + random(255) + ')';
+  document.body.style.backgroundColor = rndCol;
+}
+
+btn.onclick = bgChange;
+```
+
+有很多事件处理参数可供选择，我们来做一个实验。
+
+首先将 [random-color-eventhandlerproperty.html](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/random-color-eventhandlerproperty.html) 复制到本地，然后用浏览器打开。别慌，这只是我们之前已经进行过的一个简单随机颜色的示例的代码复制。将 `btn.onclick` 依次换成其他值，在浏览器中观察效果。
+
+- `btn.onfocus`及`btn.onblur` — 颜色将于按钮被置于焦点或解除焦点时改变（尝试使用Tab移动至按钮上，然后再移开）。这些通常用于显示有关如何在置于焦点时填写表单字段的信息，或者如果表单字段刚刚填入不正确的值，则显示错误消息。
+- `btn.ondblclick` — 颜色将仅于按钮被双击时改变。
+- `window.onkeypress`, `window.onkeydown`, `window.onkeyup` — 当按钮被按下时颜色会发生改变. `keypress` 指的是通俗意义上的按下按钮 (按下并松开), 而 `keydown` 和 `keyup` 指的是按键动作的一部分,分别指按下和松开. 注意如果你将事件处理器添加到按钮本身，它将不会工作 — 我们只能将它添加到代表整个浏览器窗口的 [window](https://developer.mozilla.org/en-US/docs/Web/API/Window)对象中。
+- `btn.onmouseover` 和 `btn.onmouseout` — 颜色将会在鼠标移入按钮上方时发生改变, 或者当它从按钮移出时.
+
+一些事件非常通用，几乎在任何地方都可以用（比如 onclick 几乎可以用在几乎每一个元素上），然而另一些元素就只能在特定场景下使用，比如我们只能在 video 元素上使用 [onplay](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/GlobalEventHandlers.onplay) 。
+
+### 行内事件处理器 - 请勿使用
 
 
 
+
+
+
+
+你也许在你的代码中看到过这么一种写法:
+
+```html
+<button onclick="bgChange()">Press me</button>
+function bgChange() {
+  var rndCol = 'rgb(' + random(255) + ',' + random(255) + ',' + random(255) + ')';
+  document.body.style.backgroundColor = rndCol;
+}
+```
+
+**Note**: 您可以在[GitHub](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/random-color-eventhandlerattributes.html)上找到这个示例的完整源代码(也可以[在线运行](http://mdn.github.io/learning-area/javascript/building-blocks/events/random-color-eventhandlerattributes.html)).
+
+在Web上注册事件处理程序的最早方法是类似于上面所示的**事件处理程序HTML属性**(也称为内联事件处理程序)—属性值实际上是当事件发生时要运行的JavaScript代码。上面的例子中调用一个在[``](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script)元素在同一个页面上，但也可以直接在属性内插入JavaScript，例如：
+
+```html
+<button onclick="alert('Hello, this is my old-fashioned event handler!');">Press me</button>
+```
+
+你会发现HTML属性等价于对许多事件处理程序的属性；但是，你不应该使用这些 —— 他们被认为是不好的做法。使用一个事件处理属性似乎看起来很简单，如果你只是在做一些非常快的事情，但很快就变得难以管理和效率低下。
+
+一开始，您不应该混用 HTML 和 JavaScript，因为这样文档很难解析——最好的办法是只在一块地方写 JavaScript 代码。
+
+即使在单一文件中，内置事件处理器也不是一个好主意。一个按钮看起来还好，但是如果有一百个按钮呢？您得在文件中加上100个属性。这很快就会成为维护人员的噩梦。使用 Java Script，您可以给网页中的 button 都加上事件处理器。就像下面这样：
+
+```js
+var buttons = document.querySelectorAll('button');
+
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].onclick = bgChange;
+}
+```
+
+**注释**: 将您的编程逻辑与内容分离也会让您的站点对搜索引擎更加友好。
+
+### addEventListener()和removeEventListener()
+
+新的事件触发机制被定义在 [Document Object Model (DOM) Level 2 Events](https://www.w3.org/TR/DOM-Level-2-Events/) Specification, 这个细则给浏览器提供了一个函数 — `addEventListener()`。这个函数和事件处理属性是类似的，但是语法略有不同。我们可以重写上面的随机颜色背景代码：
+
+```js
+var btn = document.querySelector('button');
+
+function bgChange() {
+  var rndCol = 'rgb(' + random(255) + ',' + random(255) + ',' + random(255) + ')';
+  document.body.style.backgroundColor = rndCol;
+}   
+
+btn.addEventListener('click', bgChange);
+```
+
+**注释**: 您可以在[Github](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/random-color-addeventlistener.html)上找到这个示例的完整源代码(也可以[ 在线运行](http://mdn.github.io/learning-area/javascript/building-blocks/events/random-color-addeventlistener.html))。
+
+`在addEventListener()` 函数中, 我们具体化了两个参数——我们想要将处理器应用上去的事件名称，和包含我们用来回应事件的函数的代码。注意将这些代码全部放到一个匿名函数中是可行的:
+
+```js
+btn.addEventListener('click', function() {
+  var rndCol = 'rgb(' + random(255) + ',' + random(255) + ',' + random(255) + ')';
+  document.body.style.backgroundColor = rndCol;
+});
+```
+
+这个机制带来了一些相较于旧方式的优点。有一个相对应的方法，`removeEventListener()，`这个方法移除事件监听器。例如，下面的代码将会移除上个代码块中的事件监听器：
+
+```js
+btn.removeEventListener('click', bgChange);
+```
+
+在这个简单的、小型的项目中可能不是很有用，但是在大型的、复杂的项目中就非常有用了，可以非常高效地清除不用的事件处理器，另外在其他的一些场景中也非常有效——比如您需要在不同环境下运行不同的事件处理器，您只需要恰当地删除或者添加事件处理器即可。
+
+您也可以给同一个监听器注册多个处理器，下面这种方式不能实现这一点：
+
+```js
+myElement.onclick = functionA;
+myElement.onclick = functionB;
+```
+
+第二行会覆盖第一行，但是下面这种方式就会正常工作了：
+
+```js
+myElement.addEventListener('click', functionA);
+myElement.addEventListener('click', functionB);
+```
+
+当元素被点击时两个函数都会工作：
+
+此外，该事件机制还提供了许多其他强大的特性和选项。这对于本文来说有点超出范围，但是如果您想要阅读它们，请查看`addEventListener()`和`removeEventListener()`参考页面。
+
+### 我该使用哪种机制？
+
+在三种机制中,您绝对不应该使用HTML事件处理程序属性 - 这些属性已经过时了，而且也是不好的做法，如上所述.
+
+另外两种是相对可互换的，至少对于简单的用途:
+
+- 事件处理程序属性功能和选项会更少，但是具有更好的跨浏览器兼容性(在Internet Explorer 8的支持下)，您应该从这些开始学起。
+- DOM Level 2 Events (`addEventListener()`, etc.) 更强大，但也可以变得更加复杂，并且支持不足（只支持到Internet Explorer 9）。 但是您也应该尝试这个方法，并尽可能地使用它们。
+
+第三种机制（DOM Level 2 Events (`addEventListener()`, etc.)）的主要优点是，如果需要的话，可以使用`removeEventListener()`删除事件处理程序代码，而且如果有需要，您可以向同一类型的元素添加多个监听器。例如，您可以在一个元素上多次调用`addEventListener('click', function() { ... })`，并可在第二个参数中指定不同的函数。对于事件处理程序属性来说，这是不可能的，因为后面任何设置的属性都会尝试覆盖较早的属性，例如：
+
+```js
+element.onclick = function1;
+element.onclick = function2;
+etc.
+```
+
+**注解**:如果您在工作中被要求支持比Internet Explorer 8更老的浏览器，那么您可能会遇到困难，因为这些古老的浏览器会使用与现代浏览器不同的事件处理模型。但是不要害怕，大多数JavaScript库(例如jQuery)都内置了能够跨浏览器差异的函数。在你学习JavaScript旅程里的这个阶段，不要太担心这个问题。
+
+## 其他事件概念
+
+本节我们将简要介绍一些与事件相关的高级概念。在这一点并不需要完全理解透彻，但它可能有助于你解释一些经常会遇到的代码模式。
+
+### 事件对象
+
+有时候在事件处理函数内部，您可能会看到一个固定指定名称的参数，例如`event`，`evt`或简单的`e`。 这被称为**事件对象**，它被自动传递给事件处理函数，以提供额外的功能和信息。 例如，让我们稍稍重写一遍我们的随机颜色示例：
+
+```js
+function bgChange(e) {
+  var rndCol = 'rgb(' + random(255) + ',' + random(255) + ',' + random(255) + ')';
+  e.target.style.backgroundColor = rndCol;
+  console.log(e);
+}  
+
+btn.addEventListener('click', bgChange);
+```
+
+**Note**: 您可以在Github上查看这个示例的 [完整代码](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/random-color-eventobject.html) ，或者在这里查看 [实时演示](http://mdn.github.io/learning-area/javascript/building-blocks/events/random-color-eventobject.html)。
+
+在这里，您可以看到我们在函数中包括一个事件对象`e`，并在函数中设置背景颜色样式在`e.target上` - 它指的是按钮本身。 事件对象 `e` 的`target`属性始终是事件刚刚发生的元素的引用。 所以在这个例子中，我们在按钮上设置一个随机的背景颜色，而不是页面。
+
+**Note**: 您可以使用任何您喜欢的名称作为事件对象 - 您只需要选择一个名称，然后可以在事件处理函数中引用它。 开发人员最常使用 e / evt / event，因为它们很简单易记。 坚持标准总是很好。
+
+当您要在多个元素上设置相同的事件处理程序时，`e.target`非常有用，并且在发生事件时对所有元素执行某些操作.  例如，你可能有一组16块方格，当它们被点击时就会消失。用e.target总是能准确选择当前操作的东西（方格）并执行操作让它消失，而不是必须以更困难的方式选择它。在下面的示例中(请参见[useful-eventtarget.html](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/useful-eventtarget.html)完整代码;也可以在线运行[running live](http://mdn.github.io/learning-area/javascript/building-blocks/events/useful-eventtarget.html)）我们使用JavaScript创建了16个``元素。接着我们使用 `document.querySelectorAll()`选择全部的元素,然后遍历每一个,为每一个元素都添加一个`onclick`单击事件，每当它们点击时就会为背景添加一个随机颜色。
+
+```js
+var divs = document.querySelectorAll('div');
+
+for (var i = 0; i < divs.length; i++) {
+  divs[i].onclick = function(e) {
+    e.target.style.backgroundColor = bgChange();
+  }
+}
+```
+
+输出如下(试着点击它-玩的开心):
+
+
+
+你遇到的大多数事件处理器的事件对象都有可用的标准属性和函数（方法）（请参阅完整列表`Event`对象引用 ）。然而，一些更高级的处理程序会添加一些专业属性，这些属性包含它们需要运行的额外数据。例如，媒体记录器API有一个`dataavailable`事件，它会在录制一些音频或视频时触发，并且可以用来做一些事情(例如保存它，或者回放)。对应的`ondataavailable`处理程序的事件对象有一个可用的数据属性。
+
+### 阻止默认行为
+
+有时，你会遇到一些情况，你希望事件不执行它的默认行为。 最常见的例子是Web表单，例如自定义注册表单。 当你填写详细信息并按提交按钮时，自然行为是将数据提交到服务器上的指定页面进行处理，并将浏览器重定向到某种“成功消息”页面（或 相同的页面，如果另一个没有指定。）
+
+当用户没有正确提交数据时，麻烦就来了 - 作为开发人员，你希望停止提交信息给服务器，并给他们一个错误提示，告诉他们什么做错了，以及需要做些什么来修正错误。 一些浏览器支持自动的表单数据验证功能，但由于许多浏览器不支持，因此建议你不要依赖这些功能，并实现自己的验证检查。 我们来看一个简单的例子。
+
+首先，一个简单的HTML表单，需要你填入名（first name）和姓（last name）
+
+```html
+<form>
+  <div>
+    <label for="fname">First name: </label>
+    <input id="fname" type="text">
+  </div>
+  <div>
+    <label for="lname">Last name: </label>
+    <input id="lname" type="text">
+  </div>
+  <div>
+     <input id="submit" type="submit">
+  </div>
+</form>
+<p></p>
+```
+
+这里我们用一个`onsubmit`事件处理程序（在提交的时候，在一个表单上发起`submit`事件）来实现一个非常简单的检查，用于测试文本字段是否为空。 如果是，我们在事件对象上调用`preventDefault()`函数，这样就停止了表单提交，然后在我们表单下面的段落中显示一条错误消息，告诉用户什么是错误的：
+
+```js
+var form = document.querySelector('form');
+var fname = document.getElementById('fname');
+var lname = document.getElementById('lname');
+var submit = document.getElementById('submit');
+var para = document.querySelector('p');
+
+form.onsubmit = function(e) {
+  if (fname.value === '' || lname.value === '') {
+    e.preventDefault();
+    para.textContent = 'You need to fill in both names!';
+  }
+}
+```
+
+显然，这是一种非常弱的表单验证——例如，用户输入空格或数字提交表单，表单验证并不会阻止用户提交——这不是我们例子想要达到的目的。输出如下:
+
+
+
+**Note**: 查看完整的源代码 [preventdefault-validation.html](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/preventdefault-validation.html) (也可以 [running live](http://mdn.github.io/learning-area/javascript/building-blocks/events/preventdefault-validation.html) )
+
+### 事件冒泡及捕获
+
+最后即将介绍的这个主题你常常不会深究，但如果你不理解这个主题，就会十分痛苦。事件冒泡和捕捉是两种机制，主要描述当在一个元素上有两个相同类型的事件处理器被激活会发生什么。为了容易理解，我们来看一个例子——在新标签页打开这个[show-video-box.html](http://mdn.github.io/learning-area/javascript/building-blocks/events/show-video-box.html) 例子（在这里可以查看源码 [source code](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/show-video-box.html)）。也可以在下面查看：
+
+
+
+这是一个非常简单的例子，它显示和隐藏一个包含``元素的``元素：
+
+```html
+<button>Display video</button>
+
+<div class="hidden">
+  <video>
+    <source src="rabbit320.mp4" type="video/mp4">
+    <source src="rabbit320.webm" type="video/webm">
+    <p>Your browser doesn't support HTML5 video. Here is a <a href="rabbit320.mp4">link to the video</a> instead.</p>
+  </video>
+</div>
+```
+
+当‘’button‘’元素按钮被单击时，将显示视频，它是通过将改变`的`class属性值从`hidden`变为`showing`(这个例子的CSS包含两个`class`，它们分别控制这个``盒子在屏幕上显示还是隐藏。)：
+
+```js
+btn.onclick = function() {
+  videoBox.setAttribute('class', 'showing');
+}
+```
+
+然后我们再添加几个`onclick`事件处理器，第一个添加在``元素上，第二个添加在``元素上。这个想法是当视频(``）外 ``元素内这块区域被单击时，这个视频盒子应该再次隐藏；当单击视频(``）本身，这个视频将开始播放。
+
+```html
+videoBox.onclick = function() {
+  videoBox.setAttribute('class', 'hidden');
+};
+
+video.onclick = function() {
+  video.play();
+};
+```
+
+但是有一个问题 - 当您点击`video`开始播放的视频时，它会在同一时间导致``也被隐藏。 这是因为`video`在``之内 - `video`是``的一个子元素 - 所以点击`video`实际上是同时也运行``上的事件处理程序。
+
+#### 对事件冒泡和捕捉的解释
+
+当一个事件发生在具有父元素的元素上(例如，在我们的例子中是<video>元素)时，现代浏览器运行两个不同的阶段 - 捕获阶段和冒泡阶段。 在捕获阶段：
+
+- 浏览器检查元素的最外层祖先`<html>`，是否在捕获阶段中注册了一个`onclick`事件处理程序，如果是，则运行它。
+- 然后，它移动到`<html>`中单击元素的下一个祖先元素，并执行相同的操作，然后是单击元素再下一个祖先元素，依此类推，直到到达实际点击的元素。
+
+在冒泡阶段，恰恰相反:
+
+- 浏览器检查实际点击的元素是否在冒泡阶段中注册了一个`onclick`事件处理程序，如果是，则运行它
+- 然后它移动到下一个直接的祖先元素，并做同样的事情，然后是下一个，等等，直到它到达`<html>`元素。
+
+[![img](https://mdn.mozillademos.org/files/14075/bubbling-capturing.png)](https://mdn.mozillademos.org/files/14075/bubbling-capturing.png)
+
+(单击图片可以放大这个图表)
+
+在现代浏览器中，默认情况下，所有事件处理程序都在冒泡阶段进行注册。因此，在我们当前的示例中，当您单击视频时，这个单击事件从 `<video>`元素向外冒泡直到`<html>`元素。沿着这个事件冒泡线路：
+
+- 它发现了`video.onclick...`事件处理器并且运行它，因此这个视频`<video>`第一次开始播放。
+- 接着它发现了（往外冒泡找到的） `videoBox.onclick...`事件处理器并且运行它，因此这个视频`<video>`也隐藏起来了。
+
+#### 用stopPropagation()修复问题
+
+这是令人讨厌的行为，但有一种方法来解决它！标准事件对象具有可用的名为 `stopPropagation()`的函数, 当在事件对象上调用该函数时，它只会让当前事件处理程序运行，但事件不会在**冒泡**链上进一步扩大，因此将不会有更多事件处理器被运行(不会向上冒泡)。所以，我们可以通过改变前面代码块中的第二个处理函数来解决当前的问题:
+
+```js
+video.onclick = function(e) {
+  e.stopPropagation();
+  video.play();
+};
+```
+
+你可以尝试把[show-video-box.html source code](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/show-video-box.html)拷贝到本地，然后自己动手修复它，或者在[show-video-box-fixed.html](http://mdn.github.io/learning-area/javascript/building-blocks/events/show-video-box-fixed.html) 页面查看修复结果（也可以在这里[source code](https://github.com/mdn/learning-area/blob/master/javascript/building-blocks/events/show-video-box-fixed.html)查看源码）。
+
+> **注解**: 为什么我们要弄清楚捕捉和冒泡呢？那是因为，在过去糟糕的日子里，浏览器的兼容性比现在要小得多，Netscape（网景）只使用事件捕获，而Internet Explorer只使用事件冒泡。当W3C决定尝试规范这些行为并达成共识时，他们最终得到了包括这两种情况（捕捉和冒泡）的系统，最终被应用在现在浏览器里。
+
+> **注解**: 如上所述，默认情况下，所有事件处理程序都是在冒泡阶段注册的，这在大多数情况下更有意义。如果您真的想在捕获阶段注册一个事件，那么您可以通过使用`addEventListener()`注册您的处理程序，并将可选的第三个属性设置为true。
+
+#### 事件委托
+
+冒泡还允许我们利用事件委托——这个概念依赖于这样一个事实,如果你想要在大量子元素中单击任何一个都可以运行一段代码，您可以将事件监听器设置在其父节点上，并让子节点上发生的事件冒泡到父节点上，而不是每个子节点单独设置事件监听器。
+
+一个很好的例子是一系列列表项，如果你想让每个列表点击时弹出一条信息，您可以将`click`单击事件监听器设置在父元素``上，它将会冒泡到列表项上。
+
+这个的概念在David Walsh的博客上有更多的解释，并有多个例子——看看[How JavaScript Event Delegation Works](https://davidwalsh.name/event-delegate).
+
+## 结论
+
+现在您应该知道在这个早期阶段您需要了解的所有web事件。如上所述，事件并不是JavaScript的核心部分——它们是在浏览器Web APIs中定义的。
+
+另外，理解JavaScript在不同环境下使用不同的事件模型很重要——从Web api到其他领域，如浏览器WebExtensions和Node.js(服务器端JavaScript)。我们并不期望您现在了解所有这些领域，但是当您在学习web开发的过程中，理解这些事件的基础是很有帮助的。
+
+## 参见
+
+- [Event order](http://www.quirksmode.org/js/events_order.html) (discussion of capturing and bubbling) — an excellently detailed piece by Peter-Paul Koch.
+- [Event accessing](http://www.quirksmode.org/js/events_access.html) (discussing of the event object) — another excellently detailed piece by Peter-Paul Koch.
+- [Event reference](https://developer.mozilla.org/en-US/docs/Web/Events)
+
+
+
+# JavaScript 对象入门
+
+在 JavaScript 中，大多数事物都是对象, 从作为核心功能的字符串和数组，到建立在 JavaScript 之上的浏览器 [API](https://developer.mozilla.org/zh-CN/docs/Glossary/API) 。你甚至可以自己创建对象，将相关的函数和变量高效地封装打包成便捷的数据容器。对于进一步学习 JavaScript 语言知识而言，理解这种面向对象（object-oriented, OO）的特性是必不可少的，所以，我们提供了这个模块来帮助你了解这一切。这里我们会先详细介绍对象的理论和语法，再介绍如何创建对象。
+
+## 预备知识
+
+开始这个模块之前，你应当已经对 HTML 和 CSS 有所了解。我们建议你通读 [HTML 入门](https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Introduction)和 [CSS 入门](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Introduction_to_CSS)模块，再开始了解 JavaScript。
+
+详细了解 JavaScript 对象之前，你应当已经对 JavaScript 基础有所熟悉。尝试这个模块之前，请通读 [JavaScript 第一步](https://developer.mozilla.org/zh-CN/docs/Learn/JavaScript/First_steps) 和 [JavaScript基础要件](https://developer.mozilla.org/zh-CN/docs/Learn/JavaScript/Building_blocks)
+
+**注意**：如果您无法在当前使用的电脑/平板/其他设备上创建自己的文件，可以使用在线编程网站如 [JSBin](http://jsbin.com/) 或 [Thimble](https://thimble.mozilla.org/)，来试验文章中的（大多数）代码。
+
+
+
+# JavaScript 对象基础
+
+## 对象基础
+
+对象是一个包含相关数据和方法的集合（通常由一些变量和函数组成，我们称之为对象里面的属性和方法），让我们通过一个例子来了解它们。
+
+首先, 将 [oojs.html](https://github.com/mdn/learning-area/blob/master/javascript/oojs/introduction/oojs.html) 文件复制到本地. 此文件包含非常少 — 一个供我们写源代码的 [`<script>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script) 标签, 一个供我们输入示例指令的 [`<input>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input) 标签，当页面被渲染时, 一些变量定义, 一个输出任何输入到[`<input>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input)的内容输出到[`<p>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/p)标签的函数。我们用这个文件做为基础探索对象的基础语法.
+
+如同Javascript中的很多东西一样，创建一个对象通常先定义初始化变量。 尝试在您已有的文件中JavaScript代码下面输入以下内容, 保存刷新页面:
+
+```js
+var person = {};
+```
+
+如果你在浏览器控制台输入person，然后按下Enter(确认)键，你会得到如下结果：
+
+```js
+[object Object]
+```
+
+恭喜, 你刚创建了你的第一个对象. 干的漂亮! 但这是一个空对象，所以我们做不了更多的事情。像下面一样更新下我们的对象:
+
+```js
+var person = {
+  name : ['Bob', 'Smith'],
+  age : 32,
+  gender : 'male',
+  interests : ['music', 'skiing'],
+  bio : function() {
+    alert(this.name[0] + ' ' + this.name[1] + ' is ' + this.age + ' years old. He likes ' + this.interests[0] + ' and ' + this.interests[1] + '.');
+  },
+  greeting: function() {
+    alert('Hi! I\'m ' + this.name[0] + '.');
+  }
+};
+```
+
+保存刷新后, 尝试在你的浏览器控制台输入下面的内容:
+
+```js
+person.name[0]
+person.age
+person.interests[1]
+person.bio()
+person.greeting()
+```
+
+现在在你的对象里得到了一些数据和功能（functionality），现在可以通过简单的语法访问他们了!
+
+**Note**:如果做上面的东西遇到了麻烦，尝试拿你的代码与我们的版本做对比——对比 [oojs-finished.html](https://github.com/mdn/learning-area/blob/master/javascript/oojs/introduction/oojs-finished.html) (也可以 [看实际效果](http://mdn.github.io/learning-area/javascript/oojs/introduction/oojs-finished.html))。一个对于初学者很常见的错误是在最后一个成员后面多了一个逗号，这会引发错误。
+
+所以发生了什么？一个对象由许多的成员组成，每一个成员都拥有一个名字（像上面的name、age），和一个值（如['Bob', 'Smith']、32）。每一个名字/值（name/value）对被逗号分隔开，并且名字和值之间由冒号（:）分隔，语法规则如下所示：
+
+```js
+var objectName = {
+  member1Name : member1Value,
+  member2Name : member2Value,
+  member3Name : member3Value
+}
+```
+
+对象成员的值可以是任意的，在我们的person对象里有字符串(string)，数字(number)，两个数组(array)，两个函数(function)。前4个成员是资料项目，被称为对象的属性(property)，后两个成员是函数，允许对象对资料做一些操作，被称为对象的方法(method)
+
+一个如上所示的对象被称之为对象的字面量(literal)——手动的写出对象的内容来创建一个对象。不同于从类实例化一个对象，我们会在后面学习这种方式。
+
+当你想要传输一些有结构和关联的资料时常见的方式是使用字面量来创建一个对象，举例来说，发起一个请求到服务器以存储一些数据到数据库，发送一个对象要比分别发送这些数据更有效率，而且比起数组更为易用，因为你使用名字(name)来标识这些资料。
+
+## 点表示法
+
+在上面的例子中，你使用了点表示法(dot notation)来访问对象的属性和方法。对象的名字表现为一个命名空间(namespace)，它必须写在第一位——当你想访问对象内部的属性或方法时，然后是一个点(.)，紧接着是你想要访问的项目，标识可以是简单属性的名字(name)，或者是数组属性的一个子元素，又或者是对象的方法调用。如下所示：
+
+```js
+person.age
+person.interests[1]
+person.bio()
+```
+
+### 子命名空间
+
+可以用一个对象来做另一个对象成员的值。例如将name成员
+
+```js
+name : ['Bob', 'Smith'],
+```
+
+改成
+
+```js
+name : {
+  first : 'Bob',
+  last : 'Smith'
+},
+```
+
+这样，我们实际上创建了一个子命名空间，听起来有点复杂，但用起来很简单，你只需要链式的再使用一次点表示法，像这样：
+
+```js
+person.name.first
+person.name.last
+```
+
+**注意**：你需要改变你之前的代码，从
+
+```js
+name[0]
+name[1]
+```
+
+改成
+
+```js
+name.first
+name.last
+```
+
+否则，你的方法不再有效。
 
 
 
