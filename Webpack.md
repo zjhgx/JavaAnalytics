@@ -1609,3 +1609,104 @@ Congratulations! Your new webpack configuration file has been created!
 ```
 
 [createapp.dev - create a webpack configuration in your browser](https://createapp.dev/webpack) is an online tool for creating custom webpack configuration. It allows you to select various features that will be combined and added to resulting configuration file. Also, it generates an example project based on provided webpack configuration that you can review in your browser and download.
+
+# Modules
+
+In [modular programming](https://en.wikipedia.org/wiki/Modular_programming), developers break programs up into discrete chunks of functionality called a *module*.
+
+Each module has a smaller surface area than a full program, making verification, debugging, and testing trivial. Well-written *modules* provide solid abstractions and encapsulation boundaries, so that each module has a coherent design and a clear purpose within the overall application.
+
+Node.js has supported modular programming almost since its inception. On the web, however, support for *modules* has been slow to arrive. Multiple tools exist that support modular JavaScript on the web, with a variety of benefits and limitations. webpack builds on lessons learned from these systems and applies the concept of *modules* to any file in your project.
+
+## What is a webpack Module
+
+In contrast to [Node.js modules](https://nodejs.org/api/modules.html), webpack *modules* can express their *dependencies* in a variety of ways. A few examples are:
+
+- An [ES2015 `import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) statement
+- A [CommonJS](http://www.commonjs.org/specs/modules/1.0/) `require()` statement
+- An [AMD](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) `define` and `require` statement
+- An [`@import` statement](https://developer.mozilla.org/en-US/docs/Web/CSS/@import) inside of a css/sass/less file.
+- An image url in a stylesheet `url(...)` or HTML `<img src=...>` file.
+
+## Supported Module Types
+
+webpack supports modules written in a variety of languages and preprocessors, via *loaders*. *Loaders* describe to webpack **how** to process non-JavaScript *modules* and include these *dependencies* into your *bundles*. The webpack community has built *loaders* for a wide variety of popular languages and language processors, including:
+
+- [CoffeeScript](http://coffeescript.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [ESNext (Babel)](https://babeljs.io/)
+- [Sass](http://sass-lang.com/)
+- [Less](http://lesscss.org/)
+- [Stylus](http://stylus-lang.com/)
+- [Elm](https://elm-lang.org/)
+
+And many others! Overall, webpack provides a powerful and rich API for customization that allows one to use webpack for **any stack**, while staying **non-opinionated** about your development, testing, and production workflows.
+
+For a full list, see [**the list of loaders**](https://webpack.js.org/loaders) or [**write your own**](https://webpack.js.org/api/loaders).	
+
+# Module Resolution
+
+A resolver is a library which helps in locating a module by its absolute path. A module can be required as a dependency from another module as:
+
+```js
+import foo from 'path/to/module';
+// or
+require('path/to/module');
+```
+
+The dependency module can be from the application code or a third-party library. The resolver helps webpack find the module code that needs to be included in the bundle for every such `require`/`import` statement. webpack uses [enhanced-resolve](https://github.com/webpack/enhanced-resolve) to resolve file paths while bundling modules.
+
+## Resolving rules in webpack
+
+Using `enhanced-resolve`, webpack can resolve three kinds of file paths:
+
+### Absolute paths
+
+```js
+import '/home/me/file';
+
+import 'C:\\Users\\me\\file';
+```
+
+Since we already have the absolute path to the file, no further resolution is required.
+
+### Relative paths
+
+```js
+import '../src/file1';
+import './file2';
+```
+
+In this case, the directory of the resource file where the `import` or `require` occurs is taken to be the context directory. The relative path specified in the `import/require` is joined to this context path to produce the absolute path to the module.
+
+### Module paths
+
+```js
+import 'module';
+import 'module/lib/file';
+```
+
+Modules are searched for inside all directories specified in [`resolve.modules`](https://webpack.js.org/configuration/resolve/#resolvemodules). You can replace the original module path by an alternate path by creating an alias for it using the [`resolve.alias`](https://webpack.js.org/configuration/resolve/#resolvealias) configuration option.
+
+Once the path is resolved based on the above rule, the resolver checks to see if the path points to a file or a directory. If the path points to a file:
+
+- If the path has a file extension, then the file is bundled straightaway.
+- Otherwise, the file extension is resolved using the [`resolve.extensions`](https://webpack.js.org/configuration/resolve/#resolveextensions) option, which tells the resolver which extensions are acceptable for resolution e.g. `.js`, `.jsx`.
+
+If the path points to a folder, then the following steps are taken to find the right file with the right extension:
+
+- If the folder contains a `package.json` file, then fields specified in [`resolve.mainFields`](https://webpack.js.org/configuration/resolve/#resolvemainfields) configuration option are looked up in order, and the first such field in `package.json` determines the file path.
+- If there is no `package.json` or if the [`resolve.mainFields`](https://webpack.js.org/configuration/resolve/#resolvemainfields) do not return a valid path, file names specified in the [`resolve.mainFiles`](https://webpack.js.org/configuration/resolve/#resolvemainfiles) configuration option are looked for in order, to see if a matching filename exists in the imported/required directory.
+- The file extension is then resolved in a similar way using the [`resolve.extensions`](https://webpack.js.org/configuration/resolve/#resolveextensions) option.
+
+webpack provides reasonable [defaults](https://webpack.js.org/configuration/resolve) for these options depending on your build target.
+
+## Resolving Loaders
+
+This follows the same rules as those specified for file resolution. But the [`resolveLoader`](https://webpack.js.org/configuration/resolve/#resolveloader) configuration option can be used to have separate resolution rules for loaders.
+
+## Caching
+
+Every filesystem access is cached so that multiple parallel or serial requests to the same file occur faster. In [watch mode](https://webpack.js.org/configuration/watch/#watch), only modified files are evicted from the cache. If watch mode is off, then the cache gets purged before every compilation.
+
+See [Resolve API](https://webpack.js.org/configuration/resolve) to learn more about the configuration options mentioned above.
